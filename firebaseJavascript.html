@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+<body> 
+<div class="container">
+<div class="row">
+<div class="well">
+<div class="btn-group" id="pager"><button type="button" class="btn btn-primary">1</button></div>
+</div></div>
+<div class="row">
+<ul class="list-group" id="propertyList"></ul>
+</div>
+</div>
+<script type="text/javascript">
+  window.onload = pop;
+
+  function zlist(e){
+    var c = e.target.innerHTML * 10 ;
+    load(c);
+    
+  }
+  
+  function load(t){
+    
+  var pJSON = httpGet("https://realestate-e86d1.firebaseio.com/Property.json");
+  var propertyList = document.getElementById("propertyList");
+  var PCs = propertyList.childNodes;
+  
+  var i=0;
+  while (propertyList.firstChild) {
+    propertyList.removeChild(propertyList.firstChild);
+  }
+  for(i=0+t-10;i<t;i++){
+    var linode = document.createElement("li");
+    linode.classList.add("list-group-item");
+    linode.classList.add("container");
+    var row = document.createElement("div");
+    row.classList.add("row");
+    var col1 = document.createElement("div");
+    col1.classList.add("col-sm-4");
+    var im = document.createElement("img");
+    var arr = pJSON[i].picture;
+    im.src = arr[0].link;
+    var col2 = document.createElement("div");
+    col2.classList.add("col-sm-8");
+    var name = document.createElement("div");
+    name.classList.add("panel");
+    name.classList.add("panel-default");
+    var nameb = document.createElement("div");
+    nameb.classList.add("panel-body");
+    nameb.innerHTML = pJSON[i].name;
+    var loc = document.createElement("div");
+    loc.classList.add("panel");
+    loc.classList.add("panel-default");
+    var locb = document.createElement("div");
+    locb.classList.add("panel-body");
+    locb.innerHTML = pJSON[i].location;
+    var price = document.createElement("div");
+    price.classList.add("panel");
+    price.classList.add("panel-default");
+    var priceb = document.createElement("div");
+    priceb.classList.add("panel-body");
+    priceb.innerHTML = pJSON[i].price;
+    var butg = document.createElement("div");
+    butg.classList.add("btn-group");
+    var buy = document.createElement("button");
+    buy.innerHTML = "Buy";
+    buy.classList.add("btn");
+    buy.classList.add("btn-primary");
+    var report = document.createElement("button");
+    report.innerHTML = "Report Stale";
+    report.classList.add("btn");
+    report.classList.add("btn-primary");
+    butg.appendChild(buy);
+    butg.appendChild(report);
+    name.appendChild(nameb);
+    loc.appendChild(locb);
+    price.appendChild(priceb);
+    col1.appendChild(im);
+    col2.appendChild(name);
+    col2.appendChild(loc);
+    col2.appendChild(price);
+    col2.appendChild(butg);
+    row.appendChild(col1);
+    row.appendChild(col2);
+    linode.appendChild(row);
+    propertyList.appendChild(linode);
+    
+  }
+  
+  }
+    
+  
+  
+  
+  function pop() {
+  var pJSON = httpGet("https://realestate-e86d1.firebaseio.com/Property.json");
+  var pag = (pJSON.length - (pJSON.length %  10))/10 + 1
+  var p = 2;
+  for(p=2;p<=pag;p++){
+  var node = document.createElement("button");
+  node.classList.add("btn");
+  node.classList.add("btn-primary");
+  var textnode = document.createTextNode(""+p);
+  node.appendChild(textnode);
+  document.getElementById("pager").appendChild(node);
+  }
+  
+  var pagerChildren = document.getElementById("pager").childNodes;
+  var s = 0;
+  for(s=0;s<pagerChildren.length;s++){
+    pagerChildren[s].addEventListener("click",function(e){zlist(e)});
+  }
+  
+  load(10);
+  
+  
+  }
+  
+  function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    var propertyJSON = JSON.parse(xmlHttp.responseText);
+    return propertyJSON;
+}
+  </script>
+
+  
+
+</body>
+</html>
